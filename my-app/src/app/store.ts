@@ -5,7 +5,7 @@ import paginationReducer from "../features/table/tableSlice";
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    pagination: paginationReducer,
+    table: paginationReducer,
   },
 });
 

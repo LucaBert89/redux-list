@@ -1,31 +1,75 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { setPagination, selectPagination } from "./tableSlice";
+import {
+  nextPage,
+  previousPage,
+  selectPagination,
+  setTableData,
+} from "./tableSlice";
+import getPosts from "../../app/services";
 
 export const Table = () => {
-  const count = useAppSelector(selectPagination);
+  const { listData, page } = useAppSelector(selectPagination);
+  console.log(page);
+  const fetchPosts = async () => {
+    const postsList = await getPosts();
+    const { posts } = postsList.data.user;
+
+    dispatch(setTableData(sliceIntoChunks(posts.data, 5)));
+  };
+
+  function sliceIntoChunks(arr: [], chunkSize: number) {
+    const res = [];
+    console.log(arr);
+    for (let i = 0; i < arr.length; i += chunkSize) {
+      console.log("iterator", i);
+      const chunk = arr.slice(i, i + chunkSize);
+      console.log("chunk", chunk);
+      res.push(chunk);
+    }
+
+    return res;
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   const dispatch = useAppDispatch();
 
   return (
     <div>
       <h1>Comments List</h1>
+
+      <button onClick={() => fetchPosts()}>CLICCA</button>
       <div
         style={{
-          width: "200px",
-          height: "200px",
+          width: "50px",
+          height: "50px",
           cursor: "pointer",
           color: "red",
           position: "relative",
           display: "flex",
         }}
         onClick={() => {
-          dispatch(setPagination(5));
+          if (page === listData.length - 1) {
+            console.log("page", page);
+            dispatch(previousPage(page));
+          } else {
+            console.log("reduce", page);
+            dispatch(nextPage(page + 1));
+          }
         }}
       >
-        ciao
+        next page
       </div>
+      {console.log("pagina", page)}
+      {listData.length > 0
+        ? listData[page].map((e: any, i: number) => {
+            return <div>{e.title}</div>;
+          })
+        : null}
       {/* <table id="List">
         <tr>
           <th>Company</th>

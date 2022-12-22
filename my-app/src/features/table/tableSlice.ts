@@ -2,28 +2,34 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState, AppThunk } from "../../app/store";
 
 export interface PaginationState {
-  init: number;
-  end: number;
+  listData: any[];
+  page: number;
 }
 
 const initialState: PaginationState = {
-  init: 0,
-  end: 5,
+  listData: [],
+  page: 0,
 };
 
 export const tableSlice = createSlice({
-  name: "pagination",
+  name: "table",
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    setPagination: (state, action: PayloadAction<number>) => {
-      console.log(state.init, action.payload);
+    setTableData: (state, action: PayloadAction<any>) => {
+      state.listData = action.payload;
+    },
+    nextPage: (state, action: PayloadAction<number>) => {
+      console.log("setPage", action.payload);
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
-      state.init += action.payload;
-      state.end += action.payload;
+      state.page += action.payload;
+    },
+    previousPage: (state, action: PayloadAction<number>) => {
+      console.log("setPage", action.payload);
+      state.page -= action.payload;
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -43,8 +49,8 @@ export const tableSlice = createSlice({
   //       });
 });
 
-export const selectPagination = (state: RootState) => state.pagination;
+export const selectPagination = (state: RootState) => state.table;
 
-export const { setPagination } = tableSlice.actions;
+export const { nextPage, previousPage, setTableData } = tableSlice.actions;
 
 export default tableSlice.reducer;
