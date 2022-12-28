@@ -13,19 +13,16 @@ export const Table = () => {
   const { listData, page } = useAppSelector(selectPagination);
   console.log(page);
   const fetchPosts = async () => {
-    const postsList = await getPosts();
-    const { posts } = postsList.data.user;
+    const productsList = await getPosts();
+    const { Products } = productsList.data;
 
-    dispatch(setTableData(sliceIntoChunks(posts.data, 5)));
+    dispatch(setTableData(sliceIntoChunks(Products, 5)));
   };
 
   function sliceIntoChunks(arr: [], chunkSize: number) {
     const res = [];
-    console.log(arr);
     for (let i = 0; i < arr.length; i += chunkSize) {
-      console.log("iterator", i);
       const chunk = arr.slice(i, i + chunkSize);
-      console.log("chunk", chunk);
       res.push(chunk);
     }
 
@@ -67,7 +64,13 @@ export const Table = () => {
       {console.log("pagina", page)}
       {listData.length > 0
         ? listData[page].map((e: any, i: number) => {
-            return <div>{e.title}</div>;
+            return (
+              <div key={e.productId}>
+                <div>{e.productId}</div>
+                <div>{e.product}</div>
+                <div>{e.productName}</div>
+              </div>
+            );
           })
         : null}
       {/* <table id="List">
