@@ -1,10 +1,10 @@
 import { client } from "../graphql";
 import { GET_PRODUCTS } from "./query";
 
-const getPosts = async () => {
+const getProducts = async () => {
   const response = await client.query({ query: GET_PRODUCTS });
   console.log(response);
   return response;
 };
 
-export default getPosts;
+export default getProducts;
