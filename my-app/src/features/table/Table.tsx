@@ -12,6 +12,7 @@ import getProducts from "../../app/services";
 
 export const Table = () => {
   const { listData, page } = useAppSelector(selectPagination);
+  const [order, setOrder] = useState<boolean>(true);
   const dispatch = useAppDispatch();
 
   const fetchProducts = async () => {
@@ -22,8 +23,8 @@ export const Table = () => {
   };
 
   const orderTableList = (column: string) => {
-    console.log(column);
-    dispatch(filterData({ listData, column }));
+    setOrder(!order);
+    dispatch(filterData({ listData, column, order }));
   };
 
   useEffect(() => {

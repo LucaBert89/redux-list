@@ -6,6 +6,7 @@ import { sliceIntoChunks, sortingList } from "./utils/utils";
 export interface PaginationState {
   listData: any[];
   page: number;
+  orderDirection: boolean;
 }
 
 type Column = {
@@ -15,6 +16,7 @@ type Column = {
 const initialState: PaginationState = {
   listData: [],
   page: 0,
+  orderDirection: true,
 };
 
 export const tableSlice = createSlice({
@@ -38,9 +40,9 @@ export const tableSlice = createSlice({
       state.page -= action.payload;
     },
     filterData: (state, action: PayloadAction<any>) => {
-      const { listData, column } = action.payload;
-      const sortData = sortingList(listData.flat(), column, "desc");
-      console.log(action.payload);
+      const { listData, column, order } = action.payload;
+
+      const sortData = sortingList(listData.flat(), column, order);
       const result = sliceIntoChunks(sortData, 10);
       state.listData = result;
     },
