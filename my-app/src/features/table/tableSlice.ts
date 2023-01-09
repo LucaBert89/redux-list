@@ -5,6 +5,7 @@ import { Products } from "./interfaces/Products";
 import { sliceIntoChunks, sortingList } from "./utils/utils";
 export interface PaginationState {
   listData: any[];
+  filterList: any[];
   page: number;
   orderDirection: boolean;
 }
@@ -15,6 +16,7 @@ type Column = {
 
 const initialState: PaginationState = {
   listData: [],
+  filterList: [],
   page: 0,
   orderDirection: true,
 };
@@ -26,6 +28,7 @@ export const tableSlice = createSlice({
   reducers: {
     setTableData: (state, action: PayloadAction<any>) => {
       state.listData = action.payload;
+      state.filterList = action.payload;
     },
     nextPage: (state, action: PayloadAction<number>) => {
       console.log("setPage", action.payload);
@@ -33,18 +36,34 @@ export const tableSlice = createSlice({
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
-      state.page += action.payload;
+      state.page += 1;
     },
     previousPage: (state, action: PayloadAction<number>) => {
       console.log("setPage", action.payload);
-      state.page -= action.payload;
+      state.page -= 1;
     },
-    filterData: (state, action: PayloadAction<any>) => {
+    sortData: (state, action: PayloadAction<any>) => {
       const { listData, column, order } = action.payload;
 
       const sortData = sortingList(listData.flat(), column, order);
       const result = sliceIntoChunks(sortData, 10);
       state.listData = result;
+    },
+    filterDataList: (state, action: PayloadAction<any>) => {
+      const { listData, column, value } = action.payload;
+
+      const filteredData = listData.flat().filter((item: any) => {
+        return (
+          item[column].substring(0, value.length).toLowerCase() ===
+          value.toLowerCase()
+        );
+      });
+      const result = sliceIntoChunks(filteredData, 10);
+      if (result.length > 0) {
+        state.filterList = result;
+      } else {
+        state.filterList = listData;
+      }
     },
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -66,7 +85,12 @@ export const tableSlice = createSlice({
 
 export const selectPagination = (state: RootState) => state.table;
 
-export const { nextPage, previousPage, setTableData, filterData } =
-  tableSlice.actions;
+export const {
+  nextPage,
+  previousPage,
+  setTableData,
+  sortData,
+  filterDataList,
+} = tableSlice.actions;
 
 export default tableSlice.reducer;

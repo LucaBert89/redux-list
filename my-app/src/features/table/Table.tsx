@@ -6,13 +6,23 @@ import {
   previousPage,
   selectPagination,
   setTableData,
-  filterData,
+  sortData,
+  filterDataList,
 } from "./tableSlice";
 import getProducts from "../../app/services";
+import { Products } from "../../../../server/products/interfaceProducts";
 
 export const Table = () => {
-  const { listData, page } = useAppSelector(selectPagination);
+  const { listData, page, filterList } = useAppSelector(selectPagination);
   const [order, setOrder] = useState<boolean>(true);
+  const [inputFilter, setInputFilter] = useState<Products>({
+    productId: "",
+    product: "",
+    productName: "",
+    productDescription: "",
+    price: "",
+    companyName: "",
+  });
   const dispatch = useAppDispatch();
 
   const fetchProducts = async () => {
@@ -24,7 +34,20 @@ export const Table = () => {
 
   const orderTableList = (column: string) => {
     setOrder(!order);
-    dispatch(filterData({ listData, column, order }));
+    dispatch(sortData({ listData, column, order }));
+  };
+
+  const filterData = (column: string, e: any) => {
+    const { value } = e.target;
+
+    setInputFilter({ ...inputFilter, [column]: value.toString() });
+    dispatch(
+      filterDataList({
+        listData,
+        column,
+        value,
+      })
+    );
   };
 
   useEffect(() => {
@@ -45,26 +68,44 @@ export const Table = () => {
           display: "flex",
         }}
         onClick={() => {
-          if (page === listData.length - 1) {
-            console.log("page", page);
-            dispatch(previousPage(page));
-          } else {
-            console.log("reduce", page);
-            dispatch(nextPage(page + 1));
+          if (page < filterList.length - 1) {
+            dispatch(nextPage(page));
           }
         }}
       >
         next page
+      </div>
+      <div
+        style={{
+          width: "50px",
+          height: "50px",
+          cursor: "pointer",
+          color: "red",
+          position: "relative",
+          display: "flex",
+        }}
+        onClick={() => {
+          if (page > 0) dispatch(previousPage(page));
+        }}
+      >
+        prev page
       </div>
 
       <table id="List">
         <thead>
           <tr>
             {listData.length > 0
-              ? Object.keys(listData[0][0]).map((e: any, i: number) => {
+              ? Object.keys(listData[0][0]).map((header: string, i: number) => {
                   return (
-                    <th key={e.productId}>
-                      <button onClick={() => orderTableList(e)}>{e}</button>
+                    <th key={header}>
+                      <input
+                        type="text"
+                        onChange={(e) => filterData(header, e)}
+                        value={inputFilter[header as keyof typeof inputFilter]}
+                      ></input>
+                      <button onClick={() => orderTableList(header)}>
+                        {header}
+                      </button>
                     </th>
                   );
                 })
@@ -72,8 +113,8 @@ export const Table = () => {
           </tr>
         </thead>
         <tbody>
-          {listData.length > 0
-            ? listData[page].map((e: any, i: number) => {
+          {filterList.length > 0
+            ? filterList[page].map((e: Products, i: number) => {
                 return (
                   <tr key={e.productId}>
                     <td>{e.productId}</td>
