@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
 import { useAppSelector, useAppDispatch } from "../../hooks";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import {
   nextPage,
   previousPage,
@@ -12,6 +13,7 @@ import {
 import getProducts from "../../services";
 import { Products } from "../../../../../server/products/interfaceProducts";
 import "./style/table.css";
+import { ProductDetail } from "../detail/ProductDetail";
 
 export const Table = () => {
   const { listData, page, filterList } = useAppSelector(selectPagination);
@@ -100,6 +102,9 @@ export const Table = () => {
             <th>
               <button>Delete</button>
             </th>
+            <th>
+              <button>Dettaglio</button>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -111,6 +116,11 @@ export const Table = () => {
                     <td className="table-column">{e.product}</td>
                     <td className="table-column">{e.companyName}</td>
                     <td className="table-column">X</td>
+                    <td className="table-column">
+                      <button>
+                        <Link to={`/products/${e.productId}`}>Dettaglio</Link>
+                      </button>
+                    </td>
                   </tr>
                 );
               })
