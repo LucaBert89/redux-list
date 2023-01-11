@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { log } from "console";
-import { RootState, AppThunk } from "../../app/store";
+import { RootState, AppThunk } from "../../store";
 import { Products } from "./interfaces/Products";
 import { sliceIntoChunks, sortingList } from "./utils/utils";
 export interface PaginationState {
@@ -47,7 +47,7 @@ export const tableSlice = createSlice({
 
       const sortData = sortingList(listData.flat(), column, order);
       const result = sliceIntoChunks(sortData, 10);
-      state.listData = result;
+      state.filterList = result;
     },
     filterDataList: (state, action: PayloadAction<any>) => {
       const { listData, column, value } = action.payload;

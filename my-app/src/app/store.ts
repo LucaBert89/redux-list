@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
-import paginationReducer from "../features/table/tableSlice";
+import counterReducer from "./features/counter/counterSlice";
+import paginationReducer from "./features/table/tableSlice";
 
 export const store = configureStore({
   reducer: {

@@ -1,0 +1,30 @@
+.table-buttons {
+  display: flex;
+  margin-bottom: 2em;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.table-button_next {
+  margin-right: 10em;
+}
+
+.table-button_prev {
+  margin-left: 10em;
+}
+
+#table-list {
+  width: 100%;
+}
+
+.table-column {
+  padding: 1.5em;
+}
+
+.table-rows:hover {
+  background-color: azure;
+}
+
+th {
+  width: 25%;
+}

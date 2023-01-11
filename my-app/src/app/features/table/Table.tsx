@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import {
   nextPage,
   previousPage,
@@ -9,8 +9,9 @@ import {
   sortData,
   filterDataList,
 } from "./tableSlice";
-import getProducts from "../../app/services";
-import { Products } from "../../../../server/products/interfaceProducts";
+import getProducts from "../../services";
+import { Products } from "../../../../../server/products/interfaceProducts";
+import "./style/table.css";
 
 export const Table = () => {
   const { listData, page, filterList } = useAppSelector(selectPagination);
@@ -57,41 +58,27 @@ export const Table = () => {
   return (
     <div>
       <h1>Comments List</h1>
-      <button onClick={() => fetchProducts()}>CLICCA</button>
-      <div
-        style={{
-          width: "50px",
-          height: "50px",
-          cursor: "pointer",
-          color: "red",
-          position: "relative",
-          display: "flex",
-        }}
-        onClick={() => {
-          if (page < filterList.length - 1) {
-            dispatch(nextPage(page));
-          }
-        }}
-      >
-        next page
+      <div className="table-buttons">
+        <div
+          className="table-button_prev"
+          onClick={() => {
+            if (page > 0) dispatch(previousPage(page));
+          }}
+        >
+          prev page
+        </div>
+        <div
+          className="table-button_next"
+          onClick={() => {
+            if (page < filterList.length - 1) {
+              dispatch(nextPage(page));
+            }
+          }}
+        >
+          next page
+        </div>
       </div>
-      <div
-        style={{
-          width: "50px",
-          height: "50px",
-          cursor: "pointer",
-          color: "red",
-          position: "relative",
-          display: "flex",
-        }}
-        onClick={() => {
-          if (page > 0) dispatch(previousPage(page));
-        }}
-      >
-        prev page
-      </div>
-
-      <table id="List">
+      <table id="table-list">
         <thead>
           <tr>
             {listData.length > 0
@@ -110,19 +97,20 @@ export const Table = () => {
                   );
                 })
               : null}
+            <th>
+              <button>Delete</button>
+            </th>
           </tr>
         </thead>
         <tbody>
           {filterList.length > 0
             ? filterList[page].map((e: Products, i: number) => {
                 return (
-                  <tr key={e.productId}>
-                    <td>{e.productId}</td>
-                    <td>{e.product}</td>
-                    <td>{e.productName}</td>
-                    <td>{e.productDescription}</td>
-                    <td>{e.price}</td>
-                    <td>{e.companyName}</td>
+                  <tr className="table-rows" key={e.productId}>
+                    <td className="table-column">{e.productId}</td>
+                    <td className="table-column">{e.product}</td>
+                    <td className="table-column">{e.companyName}</td>
+                    <td className="table-column">X</td>
                   </tr>
                 );
               })

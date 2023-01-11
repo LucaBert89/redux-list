@@ -5,9 +5,6 @@ export const GET_PRODUCTS = gql`
     Products {
       productId
       product
-      productDescription
-      productName
-      price
       companyName
     }
   }

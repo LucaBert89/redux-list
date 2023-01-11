@@ -1,7 +1,4 @@
-import React from "react";
-import logo from "./logo.svg";
-import { Counter } from "./features/counter/Counter";
-import { Table } from "./features/table/Table";
+import { Table } from "./app/features/table/Table";
 import "./App.css";
 
 function App() {
