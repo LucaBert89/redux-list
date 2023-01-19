@@ -9,3 +9,14 @@ export const GET_PRODUCTS = gql`
     }
   }
 `;
+
+export const GET_PRODUCT = gql`
+  query getProduct($productId: String) {
+    Product(productId: $productId) {
+      productName
+      price
+      product
+      productDescription
+    }
+  }
+`;

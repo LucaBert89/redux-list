@@ -11,7 +11,7 @@ import {
   filterDataList,
   removeItems,
 } from "./tableSlice";
-import getProducts from "../../services";
+import { getProducts } from "../../services";
 import { Products } from "../../../../../server/products/interfaceProducts";
 import "./style/table.css";
 

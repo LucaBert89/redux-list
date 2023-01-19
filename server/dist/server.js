@@ -13,6 +13,7 @@ const typeDefs = `#graphql
 
   type Query {
     Products: [Product]
+    Product(productId: String): Product
   }
 `;
 const PRODUCTS = [];
@@ -22,6 +23,9 @@ Array.from({ length: 5000 }).forEach(() => {
 const resolvers = {
     Query: {
         Products: () => PRODUCTS,
+        Product: (parent, args) => {
+            return PRODUCTS.find((product) => product.productId === args.productId);
+        },
     },
 };
 function createRandomProducts() {
