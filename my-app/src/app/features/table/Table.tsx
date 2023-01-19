@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
 import { useAppSelector, useAppDispatch } from "../../hooks";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   nextPage,
   previousPage,
@@ -9,11 +9,11 @@ import {
   setTableData,
   sortData,
   filterDataList,
+  removeItems,
 } from "./tableSlice";
 import getProducts from "../../services";
 import { Products } from "../../../../../server/products/interfaceProducts";
 import "./style/table.css";
-import { ProductDetail } from "../detail/ProductDetail";
 
 export const Table = () => {
   const { listData, page, filterList } = useAppSelector(selectPagination);
@@ -35,9 +35,17 @@ export const Table = () => {
     dispatch(setTableData(sliceIntoChunks(Products, 10)));
   };
 
+  const removeButton = (productId: string) => {
+    dispatch(removeItems({ filterList, productId }));
+  };
+
   const orderTableList = (column: string) => {
     setOrder(!order);
     dispatch(sortData({ listData, column, order }));
+  };
+
+  const undoProductRemove = (undo: boolean) => {
+    dispatch(removeItems({ filterList, undo }));
   };
 
   const filterData = (column: string, e: any) => {
@@ -54,7 +62,7 @@ export const Table = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
+    if (filterList.length === 0) fetchProducts();
   }, []);
 
   return (
@@ -115,16 +123,28 @@ export const Table = () => {
                     <td className="table-column">{e.productId}</td>
                     <td className="table-column">{e.product}</td>
                     <td className="table-column">{e.companyName}</td>
-                    <td className="table-column">X</td>
+                    <td
+                      className="table-column"
+                      onClick={() => removeButton(e.productId)}
+                    >
+                      Delete
+                    </td>
                     <td className="table-column">
                       <button>
-                        <Link to={`/products/${e.productId}`}>Dettaglio</Link>
+                        <Link
+                          to={`/products/${e.productId}`}
+                          state={filterList}
+                        >
+                          Dettaglio
+                        </Link>
                       </button>
                     </td>
                   </tr>
                 );
               })
             : null}
+          <button>Conferma</button>
+          <button onClick={() => undoProductRemove(true)}>Annulla</button>
         </tbody>
       </table>
     </div>
