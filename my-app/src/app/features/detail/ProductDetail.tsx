@@ -1,15 +1,7 @@
-import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../hooks";
-import { getSingleProduct } from "../../services";
-import {
-  selectPagination,
-  retrieveProductInfo,
-  getProduct,
-} from "../table/tableSlice";
 import { paramsId } from "./interfaces/idParams";
 import { useQuery } from "@apollo/client";
-import { GET_PRODUCTS, GET_PRODUCT } from "../../services/query";
+import { GET_PRODUCT } from "../../services/query";
 
 export const ProductDetail = () => {
   
