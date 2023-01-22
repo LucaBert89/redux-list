@@ -8,28 +8,39 @@ import {
   getProduct,
 } from "../table/tableSlice";
 import { paramsId } from "./interfaces/idParams";
+import { useQuery } from "@apollo/client";
+import { GET_PRODUCTS, GET_PRODUCT } from "../../services/query";
 
 export const ProductDetail = () => {
-  const { listData, productDetail } = useAppSelector(selectPagination);
+  
   const { id } = useParams<paramsId>();
 
-  const dispatch = useAppDispatch();
 
-  const fetchProductInfo = async () => {
-    const productInfo = dispatch(getProduct(id));
+  const { loading, error, data } = useQuery(GET_PRODUCT, {
+    variables: { productId: id },
+  });
 
-    // dispatch(setTableData(sliceIntoChunks(Products, 10)));
-  };
+  if (loading) return (
+    <div>
+      Loading
+      <div></div>
+    </div>
+  );
+  if (error) return (
+    <div>
+      Error
+      <div></div>
+    </div>
+  );;
 
-  useEffect(() => {
-    fetchProductInfo();
-  }, []);
-
-  console.log(productDetail);
+  const {Product} = data
+ 
   return (
     <div>
-      {id}
-      <div></div>
+      <div>ProductName: {Product.productName}</div>
+      <div>Price: {Product.price}</div>
+      <div>Product: {Product.product}</div>
+      <div>Product Description: {Product.productDescription}</div>
     </div>
   );
 };

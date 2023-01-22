@@ -20,3 +20,13 @@ export const GET_PRODUCT = gql`
     }
   }
 `;
+
+export const REMOVE_PRODUCT = gql`
+  mutation removeProduct($productId: String!) {
+    removeProduct(productId: $productId) {
+      productId
+    }
+  }
+`;
+
+

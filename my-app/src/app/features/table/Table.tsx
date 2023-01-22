@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from '@apollo/client';
 import {
   nextPage,
   previousPage,
@@ -11,12 +12,15 @@ import {
   filterDataList,
   removeItems,
 } from "./tableSlice";
-import { getProducts } from "../../services";
+import { REMOVE_PRODUCT } from "../../services/query";
+
 import { Products } from "../../../../../server/products/interfaceProducts";
+import { getProducts } from "../../services";
 import "./style/table.css";
 
 export const Table = () => {
-  const { listData, page, filterList } = useAppSelector(selectPagination);
+  const [removeProduct, { data, loading, error }] = useMutation(REMOVE_PRODUCT);
+  const { listData, page, filterList, deletedItems } = useAppSelector(selectPagination);
   const [order, setOrder] = useState<boolean>(true);
   const [inputFilter, setInputFilter] = useState<Products>({
     productId: "",
@@ -38,6 +42,17 @@ export const Table = () => {
   const removeButton = (productId: string) => {
     dispatch(removeItems({ filterList, productId }));
   };
+
+  const confirmRemove =async () => {
+   
+    if(!deletedItems.length) {
+      return;
+    }
+    for(let item of deletedItems) {
+      console.log(item)
+     await removeProduct({variables: {productId: item }})
+    }
+  }
 
   const orderTableList = (column: string) => {
     setOrder(!order);
@@ -64,6 +79,8 @@ export const Table = () => {
   useEffect(() => {
     if (filterList.length === 0) fetchProducts();
   }, []);
+
+
 
   return (
     <div>
@@ -143,7 +160,7 @@ export const Table = () => {
                 );
               })
             : null}
-          <button>Conferma</button>
+          <button onClick={() => confirmRemove()}>Conferma</button>
           <button onClick={() => undoProductRemove(true)}>Annulla</button>
         </tbody>
       </table>

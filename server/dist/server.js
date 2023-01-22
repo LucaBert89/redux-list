@@ -15,6 +15,10 @@ const typeDefs = `#graphql
     Products: [Product]
     Product(productId: String): Product
   }
+
+  type Mutation {
+   removeProduct(productId:String!): Product
+  }
 `;
 const PRODUCTS = [];
 Array.from({ length: 5000 }).forEach(() => {
@@ -27,6 +31,16 @@ const resolvers = {
             return PRODUCTS.find((product) => product.productId === args.productId);
         },
     },
+    Mutation: {
+        removeProduct: (parent, args) => {
+            console.log(args);
+            const index = PRODUCTS.map(e => e.productId).indexOf(args.productId);
+            console.log(index);
+            console.log(PRODUCTS[index]);
+            PRODUCTS.splice(index, 1);
+            return args.productId;
+        }
+    }
 };
 function createRandomProducts() {
     return {
