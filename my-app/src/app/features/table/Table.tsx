@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { Link, useNavigate } from "react-router-dom";
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   nextPage,
   previousPage,
@@ -12,15 +12,22 @@ import {
   filterDataList,
   removeItems,
 } from "./tableSlice";
-import { REMOVE_PRODUCT } from "../../services/query";
+import { REMOVE_PRODUCT, GET_PRODUCTS } from "../../services/query";
 
-import { Products } from "../../../../../server/products/interfaceProducts";
+import { Products } from "./interfaces/Products";
 import { getProducts } from "../../services";
 import "./style/table.css";
 
 export const Table = () => {
-  const [removeProduct, { data, loading, error }] = useMutation(REMOVE_PRODUCT);
+  const { loading, error, data } = useQuery(GET_PRODUCTS);
+
+  
+ 
+  const [removeProduct, {  }] = useMutation(REMOVE_PRODUCT);
+ 
+
   const { listData, page, filterList, deletedItems } = useAppSelector(selectPagination);
+  
   const [order, setOrder] = useState<boolean>(true);
   const [inputFilter, setInputFilter] = useState<Products>({
     productId: "",
@@ -31,25 +38,31 @@ export const Table = () => {
     companyName: "",
   });
   const dispatch = useAppDispatch();
-
-  const fetchProducts = async () => {
-    const productsList = await getProducts();
-    const { Products } = productsList.data;
-
+ 
+  
+ 
+  useEffect(() => {
+    if (data) {
+    const { Products } = data;
     dispatch(setTableData(sliceIntoChunks(Products, 10)));
-  };
+    }
+  }, [data]);
+
+
+  if(loading) return <div>loading</div>
+  if(error) return <div>error</div>
+  
 
   const removeButton = (productId: string) => {
     dispatch(removeItems({ filterList, productId }));
   };
 
-  const confirmRemove =async () => {
+  const confirmRemove = async () => {
    
     if(!deletedItems.length) {
       return;
     }
     for(let item of deletedItems) {
-      console.log(item)
      await removeProduct({variables: {productId: item }})
     }
   }
@@ -63,7 +76,7 @@ export const Table = () => {
     dispatch(removeItems({ filterList, undo }));
   };
 
-  const filterData = (column: string, e: any) => {
+  const filterData = (column: string, e: any): void => {
     const { value } = e.target;
 
     setInputFilter({ ...inputFilter, [column]: value.toString() });
@@ -76,11 +89,9 @@ export const Table = () => {
     );
   };
 
-  useEffect(() => {
-    if (filterList.length === 0) fetchProducts();
-  }, []);
-
-
+ 
+  if(loading) return <div>loading</div>
+  if(error) return <div>Error</div>
 
   return (
     <div>
@@ -166,4 +177,5 @@ export const Table = () => {
       </table>
     </div>
   );
+  
 };

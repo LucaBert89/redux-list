@@ -35,8 +35,9 @@ const resolvers = {
         removeProduct: (parent, args) => {
             console.log(args);
             const index = PRODUCTS.map(e => e.productId).indexOf(args.productId);
-            console.log(index);
-            console.log(PRODUCTS[index]);
+            if (index < 0) {
+                throw new Error('Product not found.');
+            }
             PRODUCTS.splice(index, 1);
             return args.productId;
         }
