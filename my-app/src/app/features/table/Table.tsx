@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { sliceIntoChunks } from "./utils/utils";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { Link, useNavigate } from "react-router-dom";
@@ -76,7 +76,7 @@ export const Table = () => {
     dispatch(removeItems({ filterList, undo }));
   };
 
-  const filterData = (column: string, e: any): void => {
+  const filterData = (column: string, e: React.ChangeEvent<HTMLInputElement>): void => {
     const { value } = e.target;
 
     setInputFilter({ ...inputFilter, [column]: value.toString() });

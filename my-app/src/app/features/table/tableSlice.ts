@@ -66,7 +66,7 @@ export const tableSlice = createSlice({
     retrieveProductInfo: (state, action: PayloadAction<any>) => {
       const { listData, id } = action.payload;
 
-      const productInfo = listData.flat().find((item: any) => {
+      const productInfo = listData.flat().find((item: Products) => {
         return item.productId === id;
       });
 
@@ -84,7 +84,7 @@ export const tableSlice = createSlice({
         return;
       }
 
-      const filteredData = filterList.flat().filter((item: any) => {
+      const filteredData = filterList.flat().filter((item: Products) => {
         return item.productId !== productId;
       });
 

@@ -1,6 +1,6 @@
 import { Products } from "../interfaces/Products";
 
-export function sliceIntoChunks(arr: any, chunkSize: number) {
+export function sliceIntoChunks(arr: Products[], chunkSize: number) {
   const res = [];
   for (let i = 0; i < arr.length; i += chunkSize) {
     const chunk = arr.slice(i, i + chunkSize);
@@ -11,11 +11,11 @@ export function sliceIntoChunks(arr: any, chunkSize: number) {
 }
 
 export function sortingList(listData: Products[], column: string, order: boolean) {
-  const sortedList = listData.sort((a: any, b: any) => {
-    if (a[column] < b[column]) {
+  const sortedList = listData.sort((a: Products, b: Products) => {
+    if (a[column as keyof typeof a] < b[column as keyof typeof b]) {
       return order ? -1 : 1;
     }
-    if (a[column] > b[column]) {
+    if (a[column as keyof typeof a] > b[column as keyof typeof b]) {
       return order ? 1 : -1;
     }
     return 0;
